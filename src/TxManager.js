@@ -1,7 +1,8 @@
-const ethers = require('ethers')
-const { Mutex } = require('async-mutex')
-const { GasPriceOracle } = require('gas-price-oracle')
+const {newKit} = require('@celo/contractkit')
+const {Mutex} = require('async-mutex')
+const {GasPriceOracle} = require('gas-price-oracle')
 const Transaction = require('./Transaction')
+
 
 const defaultConfig = {
   MAX_RETRIES: 10,
@@ -14,20 +15,27 @@ const defaultConfig = {
   CONFIRMATIONS: 8,
   ESTIMATE_GAS: true,
   THROW_ON_REVERT: true,
-  BLOCK_GAS_LIMIT: null,
+  BLOCK_GAS_LIMIT: 10000000,
 }
 
 class TxManager {
-  constructor({ privateKey, rpcUrl, broadcastNodes = [], config = {} }) {
-    this.config = Object.assign({ ...defaultConfig }, config)
-    this._privateKey = privateKey.startsWith('0x') ? privateKey : '0x' + privateKey
-    this._provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    this._wallet = new ethers.Wallet(this._privateKey, this._provider)
-    this.address = this._wallet.address
+  constructor({privateKey, rpcUrl, broadcastNodes = [], config = {}}) {
+    this.config = Object.assign({...defaultConfig}, config)
+    this._kit = newKit(rpcUrl)
+    const formattedPrivateKey = '0x' + privateKey
+    this._kit.connection.addAccount(formattedPrivateKey)
     this._broadcastNodes = broadcastNodes
-    this._gasPriceOracle = new GasPriceOracle({ defaultRpc: rpcUrl })
+    this._gasPriceOracle = new GasPriceOracle({defaultRpc: rpcUrl})
     this._mutex = new Mutex()
     this._nonce = null
+  }
+
+  /*
+   * Must be called after constructing to ensure `address` is set
+   */
+  async init() {
+    const accounts = await this._kit.web3.eth.getAccounts()
+    this.address = accounts[0]
   }
 
   /**

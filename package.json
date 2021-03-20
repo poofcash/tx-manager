@@ -1,5 +1,5 @@
 {
-  "name": "tx-manager",
+  "name": "@poofcash/tx-manager",
   "version": "0.2.9",
   "description": "",
   "main": "index.js",
@@ -11,16 +11,17 @@
     "test": "mocha --timeout 300000"
   },
   "keywords": [],
-  "author": "Roman Semenov <semenov.roma@gmail.com>",
+  "author": "Brian Li <brnli7@gmail.com>",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git://github.com/tornadocash/tx-manager.git"
+    "url": "git://github.com/poofcash/tx-manager.git"
   },
   "files": [
     "src/*"
   ],
   "dependencies": {
+    "@celo/contractkit": "^1.0.2",
     "async-mutex": "^0.2.4",
     "ethers": "^5.0.17",
     "gas-price-oracle": "^0.2.2",

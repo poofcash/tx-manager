@@ -1,9 +1,8 @@
 require('dotenv').config()
 require('chai').should()
-const { parseUnits } = require('ethers').utils
+const {parseUnits} = require('ethers').utils
 const TxManager = require('../src/TxManager')
-// const Transaction = require('../src/Transaction')
-const { RPC_URL, PRIVATE_KEY } = process.env
+const {RPC_URL, PRIVATE_KEY} = process.env
 
 describe('TxManager', () => {
   const manager = new TxManager({
@@ -13,6 +12,10 @@ describe('TxManager', () => {
       CONFIRMATIONS: 1,
       GAS_BUMP_INTERVAL: 1000 * 15,
     },
+  })
+
+  before(async () => {
+    await manager.init()
   })
 
   const tx1 = {
