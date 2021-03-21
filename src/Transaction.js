@@ -164,14 +164,12 @@ class Transaction {
    * @private
    */
   async _getGasPrice(wiggle) {
-    const decimals = 18
-
     const goldTokenAddress = await this._kit.registry.addressFor(CeloContract.GoldToken)
     const gasPriceMinimumContract = await this._kit.contracts.getGasPriceMinimum()
     const gasPriceMinimum = await gasPriceMinimumContract.getGasPriceMinimum(goldTokenAddress)
     const gasPrice = gasPriceMinimum * wiggle // in CELO
-    console.log(`Gas price (@${wiggle}) is now ${gasPrice / Math.pow(10, decimals)} CELO`)
-    return parseUnits(gasPrice.toString(), decimals).toHexString()
+    console.log(`Gas price (@${wiggle}) is now ${gasPrice / Math.pow(10, 9)} gwei`)
+    return BigNumber.from(gasPrice.toString()).toHexString()
   }
 
   /**
